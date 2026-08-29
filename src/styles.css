@@ -1,0 +1,250 @@
+:root {
+  --bg: #0c1416;
+  --bg-panel: #101c1f;
+  --bg-elevated: #16262a;
+  --accent: #2dd4c8;
+  --accent-dim: #1a8f86;
+  --text: #e6f4f3;
+  --text-dim: #7fa3a0;
+  --border: #1f3336;
+  --danger: #e05c5c;
+}
+
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+body {
+  font-family: "Segoe UI", system-ui, sans-serif;
+  background: var(--bg);
+  color: var(--text);
+  overflow: hidden;
+  user-select: none;
+}
+
+.app {
+  display: grid;
+  grid-template-columns: 220px 1fr;
+  height: 100vh;
+}
+
+.sidebar {
+  background: var(--bg-panel);
+  border-right: 1px solid var(--border);
+  display: flex;
+  flex-direction: column;
+  padding: 16px 12px;
+}
+
+.brand {
+  font-weight: 700;
+  font-size: 18px;
+  color: var(--accent);
+  padding: 8px 10px 20px;
+  letter-spacing: 0.5px;
+}
+
+.nav-item {
+  padding: 10px 12px;
+  border-radius: 8px;
+  color: var(--text-dim);
+  cursor: pointer;
+  font-size: 14px;
+  margin-bottom: 4px;
+  transition: background 0.15s, color 0.15s;
+}
+
+.nav-item:hover {
+  background: var(--bg-elevated);
+  color: var(--text);
+}
+
+.nav-item.active {
+  background: var(--accent-dim);
+  color: #04201d;
+  font-weight: 600;
+}
+
+.account-box {
+  margin-top: auto;
+  border-top: 1px solid var(--border);
+  padding-top: 12px;
+  font-size: 13px;
+  color: var(--text-dim);
+}
+
+.main {
+  padding: 28px 32px;
+  overflow-y: auto;
+}
+
+.panel-title {
+  font-size: 22px;
+  font-weight: 700;
+  margin-bottom: 20px;
+}
+
+.profile-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+  gap: 16px;
+}
+
+.profile-card {
+  background: var(--bg-elevated);
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  padding: 16px;
+  cursor: pointer;
+  transition: border-color 0.15s, transform 0.1s;
+}
+
+.profile-card:hover {
+  border-color: var(--accent-dim);
+  transform: translateY(-2px);
+}
+
+.profile-card h3 {
+  font-size: 15px;
+  margin-bottom: 4px;
+}
+
+.profile-card p {
+  font-size: 12px;
+  color: var(--text-dim);
+}
+
+.launch-bar {
+  position: sticky;
+  bottom: 0;
+  margin-top: 24px;
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  background: var(--bg-panel);
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  padding: 14px 18px;
+}
+
+.btn-launch {
+  background: var(--accent);
+  color: #04201d;
+  border: none;
+  padding: 12px 28px;
+  border-radius: 8px;
+  font-weight: 700;
+  font-size: 15px;
+  cursor: pointer;
+}
+
+.btn-launch:disabled {
+  background: var(--bg-elevated);
+  color: var(--text-dim);
+  cursor: not-allowed;
+}
+
+.btn-secondary {
+  background: transparent;
+  color: var(--accent);
+  border: 1px solid var(--accent-dim);
+  padding: 8px 16px;
+  border-radius: 8px;
+  cursor: pointer;
+  font-size: 13px;
+}
+
+.progress-track {
+  flex: 1;
+  height: 6px;
+  background: var(--bg-elevated);
+  border-radius: 4px;
+  overflow: hidden;
+}
+
+.progress-fill {
+  height: 100%;
+  background: var(--accent);
+  transition: width 0.2s;
+}
+
+.status-text {
+  font-size: 12px;
+  color: var(--text-dim);
+}
+
+.console {
+  margin-top: 16px;
+  background: #060b0c;
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  padding: 12px 14px;
+  height: 220px;
+  overflow-y: auto;
+  font-family: "Cascadia Code", "Consolas", monospace;
+}
+
+.console-line {
+  font-size: 12px;
+  color: #a9d4d0;
+  line-height: 1.5;
+  white-space: pre-wrap;
+  word-break: break-word;
+}
+
+.mod-list {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.mod-row {
+  background: var(--bg-elevated);
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  padding: 10px 14px;
+}
+
+.mod-toggle {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  cursor: pointer;
+  font-size: 14px;
+}
+
+.mod-toggle input {
+  accent-color: var(--accent);
+  width: 16px;
+  height: 16px;
+}
+
+.settings-form {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+  max-width: 420px;
+}
+
+.settings-field {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  font-size: 13px;
+  color: var(--text-dim);
+}
+
+.settings-field input[type="range"] {
+  accent-color: var(--accent);
+}
+
+.settings-field input[type="text"] {
+  background: var(--bg-elevated);
+  border: 1px solid var(--border);
+  border-radius: 6px;
+  padding: 8px 10px;
+  color: var(--text);
+  font-size: 13px;
+}

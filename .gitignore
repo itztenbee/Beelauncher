@@ -1,0 +1,17 @@
+# JavaScript dependencies and build output
+node_modules/
+dist/
+
+# Rust and Tauri build output
+src-tauri/target/
+
+# Local build diagnostics
+*.log
+tauri-build-override.json
+
+# Editor and operating-system files
+.vscode/
+.idea/
+*.tmp
+Thumbs.db
+.DS_Store
