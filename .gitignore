@@ -8,6 +8,8 @@ src-tauri/target/
 # Local build diagnostics
 *.log
 tauri-build-override.json
+Beelauncher-windows-build.zip
+Beelauncher-windows/
 
 # Editor and operating-system files
 .vscode/
