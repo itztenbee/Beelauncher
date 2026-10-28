@@ -64,10 +64,13 @@ struct MinecraftProfile {
 }
 
 pub async fn login_with_microsoft() -> Result<AccountInfo, String> {
+    if CLIENT_ID == "REPLACE_WITH_YOUR_AZURE_CLIENT_ID" {
+        return Err("Microsoft-Anmeldung ist noch nicht eingerichtet: Es fehlt die Azure Application (Client) ID. Erstelle eine kostenlose App-Registrierung für persönliche Microsoft-Konten und hinterlege deren Client-ID im Launcher.".into());
+    }
     let client = reqwest::Client::new();
 
     // 1. Request a device code from Microsoft.
-    let device_res: DeviceCodeResponse = client
+    let device_response = client
         .post("https://login.microsoftonline.com/consumers/oauth2/v2.0/devicecode")
         .form(&[
             ("client_id", CLIENT_ID),
@@ -75,10 +78,16 @@ pub async fn login_with_microsoft() -> Result<AccountInfo, String> {
         ])
         .send()
         .await
-        .map_err(|e| e.to_string())?
+        .map_err(|e| format!("Microsoft konnte nicht erreicht werden: {e}"))?;
+    if !device_response.status().is_success() {
+        let status = device_response.status();
+        let detail = device_response.text().await.unwrap_or_default();
+        return Err(format!("Microsoft-Anmeldung wurde abgelehnt ({status}): {detail}"));
+    }
+    let device_res: DeviceCodeResponse = device_response
         .json()
         .await
-        .map_err(|e| e.to_string())?;
+        .map_err(|e| format!("Microsoft-Antwort konnte nicht gelesen werden: {e}"))?;
 
     // TODO: surface this to the frontend instead of just printing it --
     // e.g. emit a Tauri event so the UI can show "go to X and enter code Y".

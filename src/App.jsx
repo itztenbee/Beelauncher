@@ -21,6 +21,7 @@ export default function App() {
   const [modrinthQuery, setModrinthQuery] = useState("");
   const [modrinthResults, setModrinthResults] = useState([]);
   const [modrinthLoading, setModrinthLoading] = useState(false);
+  const [addingProjectId, setAddingProjectId] = useState("");
   const logEndRef = useRef(null);
   const currentProfile = profiles.find((p) => p.id === selectedProfile) ?? null;
 
@@ -36,7 +37,7 @@ export default function App() {
   async function toggleMod(filename, enabled) { if (!currentProfile) return; await invoke("toggle_mod", { profileId: currentProfile.id, filename, enabled }); refreshProfiles(); }
   async function addMod(event) { event.preventDefault(); if (!currentProfile || !modUrl.trim()) return; try { const url = modUrl.trim(); await invoke("add_mod", { profileId: currentProfile.id, filename: modFilename(url), url }); setModUrl(""); setModError(""); await refreshProfiles(); } catch (error) { setModError(`Mod konnte nicht hinzugefügt werden: ${error}`); } }
   async function searchModrinth(event) { event.preventDefault(); if (!currentProfile || !modrinthQuery.trim()) return; setModrinthLoading(true); setModError(""); try { setModrinthResults(await invoke("search_modrinth", { profileId: currentProfile.id, query: modrinthQuery.trim() })); } catch (error) { setModError(String(error)); } finally { setModrinthLoading(false); } }
-  async function addModrinth(projectId) { if (!currentProfile) return; try { await invoke("add_modrinth_mod", { profileId: currentProfile.id, projectId }); await refreshProfiles(); } catch (error) { setModError(String(error)); } }
+  async function addModrinth(projectId) { if (!currentProfile) return; setAddingProjectId(projectId); setModError(""); try { await invoke("add_modrinth_mod", { profileId: currentProfile.id, projectId }); await refreshProfiles(); setStatus("Mod wurde installiert"); } catch (error) { setModError(`Mod konnte nicht installiert werden: ${error}`); } finally { setAddingProjectId(""); } }
   async function saveProfile(patch) { if (!currentProfile) return; await invoke("save_profile", { profile: { ...currentProfile, ...patch } }); refreshProfiles(); }
 
   const profileDetail = currentProfile && <>
@@ -48,7 +49,7 @@ export default function App() {
     <section className="content-grid">
       <div className="panel mods-panel"><div className="panel-heading"><div><span className="eyebrow">TEXTUREPACKS / MODS</span><h2>Mods in diesem Profil</h2></div><span className="count-badge">{currentProfile.mods.length}</span></div>
         <form className="add-mod-form" onSubmit={searchModrinth}><input value={modrinthQuery} onChange={(e) => setModrinthQuery(e.target.value)} placeholder="Modrinth durchsuchen (z. B. Sodium)" /><button className="btn-gradient" type="submit">{modrinthLoading ? "SUCHT …" : "MODRINTH SUCHEN"}</button></form>
-        {modrinthResults.length > 0 && <div className="modrinth-results">{modrinthResults.map((mod) => <div className="modrinth-row" key={mod.project_id}>{mod.icon_url ? <img src={mod.icon_url} alt="" /> : <div className="mod-icon">M</div>}<div><strong>{mod.title}</strong><span>von {mod.author} · {mod.downloads.toLocaleString("de-DE")} Downloads</span><p>{mod.description}</p></div><button className="btn-gradient" onClick={() => addModrinth(mod.project_id)}>HINZUFÜGEN</button></div>)}</div>}
+        {modrinthResults.length > 0 && <div className="modrinth-results">{modrinthResults.map((mod) => <div className="modrinth-row" key={mod.project_id}>{mod.icon_url ? <img src={mod.icon_url} alt="" /> : <div className="mod-icon">M</div>}<div><strong>{mod.title}</strong><span>von {mod.author} · {mod.downloads.toLocaleString("de-DE")} Downloads</span><p>{mod.description}</p></div><button className="btn-gradient" disabled={addingProjectId === mod.project_id} onClick={() => addModrinth(mod.project_id)}>{addingProjectId === mod.project_id ? "INSTALLIERT …" : "HINZUFÜGEN"}</button></div>)}</div>}
         <form className="add-mod-form direct-mod" onSubmit={addMod}><input value={modUrl} onChange={(e) => setModUrl(e.target.value)} placeholder="Oder direkte Download-URL zu einer .jar-Datei" /><button className="btn-gradient" type="submit">+ URL</button></form>{modError && <p className="form-error">{modError}</p>}
         <div className="mod-list modern">{currentProfile.mods.length === 0 ? <div className="empty-state">Noch keine Mods. Füge oben eine direkte .jar-Download-URL hinzu.</div> : currentProfile.mods.map((mod) => <div className="mod-row" key={mod.filename}><div className="mod-icon">M</div><div className="mod-details"><strong>{mod.filename}</strong><span>{mod.enabled ? "Aktiv im nächsten Start" : "Deaktiviert"}</span></div><label className="switch"><input type="checkbox" checked={mod.enabled} onChange={(e) => toggleMod(mod.filename, e.target.checked)} /><span /></label></div>)}</div>
       </div>
