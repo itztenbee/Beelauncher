@@ -33,7 +33,7 @@ pub async fn search(profile_id: &str, query: &str) -> Result<Vec<SearchHit>, Str
         description: hit["description"].as_str().unwrap_or("Keine Beschreibung.").to_string(),
         author: hit["author"].as_str().unwrap_or("Unbekannt").to_string(), icon_url: hit["icon_url"].as_str().map(str::to_string),
         downloads: hit["downloads"].as_u64().unwrap_or(0), categories: hit["categories"].as_array().into_iter().flatten().filter_map(|v| v.as_str().map(str::to_string)).collect(),
-    }).collect())
+    })).collect())
 }
 
 pub async fn install(profile_id: &str, project_id: &str) -> Result<Profile, String> {
